@@ -12,8 +12,8 @@ ruby analize.rb ./analize-config.yaml
 config.yaml format
 -----------------------
 ```ruby
-data_dir: /Users/kepes/Work/loganalizer/dat
-apache_logs: /Users/kepes/Work/loganalizer/testlog
+data_dir: /var/lib/wordpress-brute
+apache_logs: /usr/local/apache/domlogs/
 apache_logs_pattern: ?/?
 deny_cmd: echo
 apache_logs_start_last: true
