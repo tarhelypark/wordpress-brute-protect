@@ -20,7 +20,12 @@ unless Dir.exist? config['data_dir']
 end
   
 Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
-  puts "Checking " + dir
+  exclude = false
+  config['exclude_names'].each do |e|
+    exclude = exclude || dir.include?(e)
+  end
+  next if exclude
+  
   log_data = nil
   if File.exist? "#{config['data_dir']}/" + File.basename(dir) + ".dat"
     File.open("#{config['data_dir']}/" + File.basename(dir) + ".dat","r") do |fdata|
@@ -33,7 +38,7 @@ Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
   log_mtime = File.mtime(dir).to_s
   
   if !log_data.nil? && log_mtime == log_data['mtime']
-    puts "Log file not changed: " + dir
+    #puts "Log file not changed: " + dir
   else
     File.open(dir,'r') do |file|
       log_first_line = file.gets
@@ -80,7 +85,7 @@ Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
             end
           end
         end
-        puts lineNr.to_s + " lines checked"
+        puts lineNr.to_s + " lines checked in #{dir}"
         ipdeny.each do |ip|
           puts "deny " + ip
           cmd = config['deny_cmd'] + ' ' + ip
@@ -96,7 +101,7 @@ Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
         log_data[:mtime] = log_mtime
         log_data[:iplist] = iplist
         log_data[:first_line] = log_first_line
-      
+        
         fdata.puts JSON.generate(log_data)
       end
     end
