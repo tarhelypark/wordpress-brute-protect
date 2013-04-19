@@ -25,8 +25,8 @@ exclude_names:
 ```
 
 ## Configuration parameters
-data_dir: where to store data files
-apache_logs: where to find apache logs
-apache_logs_pattern: pattern for finding logs in format for glob
-deny_cmd: command from deny an IP address
-apache_logs_start_last: true if old logs not processed and start from the end of all log file. False for process all logs from the begining. Only affect the first run of the script.  
+* data_dir: where to store data files
+* apache_logs: where to find apache logs
+* apache_logs_pattern: pattern for finding logs in format for glob
+* deny_cmd: command from deny an IP address
+* apache_logs_start_last: true if old logs not processed and start from the end of all log file. False for process all logs from the begining. Only affect the first run of the script.  
