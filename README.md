@@ -8,7 +8,7 @@ Scan all specified webserver log files and try to find IP addresses which brutes
 Usage
 -----------------------
 ```console
-ruby analize.rb ./analize-config.yaml
+ruby analyse.rb ./config.yaml
 ``` 
 
 config.yaml format
