@@ -17,7 +17,7 @@ config.yaml format
 data_dir: /var/lib/wordpress-brute
 apache_logs: /usr/local/apache/domlogs/
 apache_logs_pattern: ?/?
-deny_cmd: csf --deny
+deny_cmd: /usr/sbin/csf --deny
 apache_logs_start_last: true
 exclude_names:
   - bytes_log
