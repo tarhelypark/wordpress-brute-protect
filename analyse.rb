@@ -50,7 +50,7 @@ Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
       end
       
       if log_data.nil? && config["apache_logs_start_last"]
-        puts "First read of log. Past entries ignored."
+        puts "First read, past entries ignored: #{dir}"
       else 
         if !log_data.nil? && log_first_line == log_data['first_line']
           file.seek log_data['size']
