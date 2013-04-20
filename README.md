@@ -11,6 +11,12 @@ Usage
 ruby analyse.rb ./config.yaml
 ``` 
 
+Best in cron job:
+```console
+#/etc/cron.d/wordpress-block
+SHELL=/bin/sh
+*/2 * * * * root        /usr/local/bin/ruby /home/cpadmin/analyse.rb /home/cpadmin/analize-config.yaml >> /var/log/wordpress-block.log
+```
 config.yaml format
 -----------------------
 ```ruby
@@ -30,6 +36,8 @@ exclude_names:
 * apache_logs_pattern: pattern for finding logs in format for glob
 * deny_cmd: command from deny an IP address
 * apache_logs_start_last: true if old logs not processed and start from the end of all log file. False for process all logs from the begining. Only affect the first run of the script.  
+* exclude_names: exclude log files with names specified here
 
 ## TODO
 * Logging
+* Check if process already running
