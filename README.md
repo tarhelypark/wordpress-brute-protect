@@ -15,7 +15,7 @@ Best in cron job:
 ```console
 #/etc/cron.d/wordpress-block
 SHELL=/bin/sh
-*/2 * * * * root        /usr/local/bin/ruby /home/cpadmin/analyse.rb /home/cpadmin/analize-config.yaml >> /var/log/wordpress-block.log
+*/2 * * * * root        /usr/local/bin/ruby /root/analyse.rb /home/root/config.yaml >> /var/log/wordpress-block.log
 ```
 config.yaml format
 -----------------------
