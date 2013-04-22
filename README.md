@@ -1,7 +1,7 @@
 wordpress-brute-protect
 =======================
 
-Brute force protection tool for hosting administrators. Designed mainly for cPanel hosting enirnoment but should works on any webserver.
+Brute force protection tool for hosting administrators. Designed mainly for cPanel hosting envirnoment but should works on any webserver.
 
 Scan all specified webserver log files and try to find IP addresses which brutes wordpress installations. If found call deny_cmd to disallow access. Deny command can be iptables or csf
 
