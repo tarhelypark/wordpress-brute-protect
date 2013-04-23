@@ -33,6 +33,8 @@ end
 # Load YAML xonfig
 config = YAML.load_file(config_name)
 config['apache_logs_pattern'] = config['apache_logs_pattern'].tr('?', '*')
+whitelist = config['whitelist'].split(',')
+whitelist.collect! { |ip| ip.strip }
 
 # Create data dir if it isn't exists
 unless Dir.exist? config['data_dir']
@@ -153,11 +155,15 @@ end
 
 # Deny all IP address what we found
 ipdeny.each do |ip|
-  cmd = config['deny_cmd'] + ' ' + ip
-  log "deny ip: #{ip}"
-  #log "command: #{cmd}"
-  `#{cmd}` 
-  #log "command output: " + $?.to_s
+  if whitelist.include? ip
+    log "Attacker on whitelist: #{ip}"
+  else
+    cmd = config['deny_cmd'] + ' ' + ip
+    log "Deny ip: #{ip}"
+    #log "command: #{cmd}"
+    `#{cmd}` 
+    #log "command output: " + $?.to_s
+  end
 end
 
 log "-- Log check Finished ---------------------------------------------------"
