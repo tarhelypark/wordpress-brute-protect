@@ -39,9 +39,9 @@ exclude_names:
 * apache_logs_start_last: true if old logs NOT processed and start from the end of all log file. False for process all logs from the begining. Only affect the first run of the script. Usefull on working systems with large log files. If false first run can take long time!   
 * whitelist: script will not deny this IP addresses
 * exclude_names: exclude log files with names specified here
-log: log file 
-top_access_log: top access logs reported here
-max_top_access: number of top access logs 
+* log: log file 
+* top_access_log: top access logs reported here
+* max_top_access: number of top access logs 
 
 ## TODO
 * Logging
