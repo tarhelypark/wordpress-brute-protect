@@ -15,7 +15,7 @@ require 'json'
 
 # Log one line and put timestamp into
 def log (text)
-  puts "#{Time.new.to_s} #{text}"
+  @log_file.puts "#{Time.new.to_s} #{text}"
 end
 
 # First argument must be config.yaml file
@@ -41,8 +41,12 @@ unless Dir.exist? config['data_dir']
   Dir.mkdir config['data_dir'], 0700
 end
 
+@log_file = File.open("#{config['log']}","a") 
+
 log "-- Start log check ------------------------------------------------------"
 ipdeny = Array.new
+
+top_access = Array.new
 
 # Iterate over all log files
 Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
@@ -137,6 +141,11 @@ Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
           end
         end
         log lineNr.to_s + " lines checked in #{dir}"
+        
+        # Generate top access log list
+        top_access << { nr:lineNr, file:dir }
+        top_access = top_access.sort_by { |nr, file| nr }
+        top_access = top_access.take(config["max_top_access"])
       end
       
       # Save iplist and log info for next run into JSON data file
@@ -166,4 +175,14 @@ ipdeny.each do |ip|
   end
 end
 
+File.open("#{config['top_access_log']}","a") do |ftop|
+  ftop.puts "#{Time.new.to_s} -- Top access logs ---------------------------------------------------"
+  top_access.each do |top|
+    ftop.puts "#{Time.new.to_s} #{top[:nr]} #{top[:file]}"
+  end
+end
+
 log "-- Log check Finished ---------------------------------------------------"
+
+@log_file.close
+
