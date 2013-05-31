@@ -144,8 +144,7 @@ Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
         
         # Generate top access log list
         top_access << { nr:lineNr, file:dir }
-        top_access = top_access.sort_by { |nr, file| nr }
-        top_access = top_access.take(config["max_top_access"])
+        top_access = top_access.sort_by { |top| top[:nr] }.reverse.take(config["max_top_access"])
       end
       
       # Save iplist and log info for next run into JSON data file
