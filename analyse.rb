@@ -135,6 +135,12 @@ Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
               # First try we have to initialize iplist with IP address
               iplist[fields[0]] = 1
             end
+            
+          # If browser is DirBuster deny it immediately
+          elsif fields[8].include?("DirBuster") && !ipdeny.include?(fields[0])
+            ipdeny << fields[0]
+            log "DirBuster found: " + fields[0]
+            
           else 
             # If current line isn't wp-login.php or Ip already denied delete IP from IP list
             iplist.delete fields[0] if iplist.has_key?(fields[0])
