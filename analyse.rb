@@ -47,6 +47,7 @@ log "-- Start log check ------------------------------------------------------"
 ipdeny = Array.new
 
 top_access = Array.new
+top_size = Array.new
 
 # Iterate over all log files
 Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
@@ -103,6 +104,8 @@ Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
         
         # Count line numbers
         lineNr = 0
+        # Count transfer size
+        transSize = 0
         
         # Read log lines
         while line = file.gets
@@ -115,35 +118,43 @@ Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
           # If regexp not matched log an error
           if fields.nil?
             log "Can't process line: " + line
-            
-          # If line is a wp-login.php POST and client Ip not in deny list this is an attack
-          elsif fields[4].include?("POST /wp-login.php") && !ipdeny.include?(fields[0])
-            # If we already found other attack from same IP
-            if iplist.has_key?(fields[0]) 
-              # count this attack
-              iplist[fields[0]] = iplist[fields[0]] + 1
-              
-              # if there is more than 5 try in iplist we have to deny the IP
-              if iplist[fields[0]] == 5
-                # put IP to ipdeny 
-                ipdeny << fields[0]
-                # delete from iplist
-                iplist.delete fields[0]
-                log "attacker found: " + fields[0]
-              end
-            else
-              # First try we have to initialize iplist with IP address
-              iplist[fields[0]] = 1
+          else
+            # Add transfer size if size is an integer
+            if fields[6].to_i.to_s == fields[6]
+              transSize = transSize + fields[6].to_i
+            elsif fields[6] != '-' 
+              log "Wrong transfer size: " + line
             end
             
-          # If browser is DirBuster deny it immediately
-          elsif fields[8].include?("DirBuster") && !ipdeny.include?(fields[0])
-            ipdeny << fields[0]
-            log "DirBuster found: " + fields[0]
+            # If line is a wp-login.php POST and client Ip not in deny list this is an attack
+            if fields[4].include?("POST /wp-login.php") && !ipdeny.include?(fields[0])
+              # If we already found other attack from same IP
+              if iplist.has_key?(fields[0]) 
+                # count this attack
+                iplist[fields[0]] = iplist[fields[0]] + 1
+              
+                # if there is more than 5 try in iplist we have to deny the IP
+                if iplist[fields[0]] == 5
+                  # put IP to ipdeny 
+                  ipdeny << fields[0]
+                  # delete from iplist
+                  iplist.delete fields[0]
+                  log "attacker found: " + fields[0]
+                end
+              else
+                # First try we have to initialize iplist with IP address
+                iplist[fields[0]] = 1
+              end
+  
+            # If browser is DirBuster deny it immediately
+            elsif fields[8].include?("DirBuster") && !ipdeny.include?(fields[0])
+              ipdeny << fields[0]
+              log "DirBuster found: " + fields[0]
             
-          else 
-            # If current line isn't wp-login.php or Ip already denied delete IP from IP list
-            iplist.delete fields[0] if iplist.has_key?(fields[0])
+            else 
+              # If current line isn't wp-login.php or Ip already denied delete IP from IP list
+              iplist.delete fields[0] if iplist.has_key?(fields[0])
+            end
           end
         end
         log lineNr.to_s + " lines checked in #{dir}"
@@ -151,6 +162,10 @@ Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
         # Generate top access log list
         top_access << { nr:lineNr, file:dir }
         top_access = top_access.sort_by { |top| top[:nr] }.reverse.take(config["max_top_access"])
+        
+        # Generate top size log list
+        top_size << { size:transSize, file:dir }
+        top_size = top_size.sort_by { |top| top[:size] }.reverse.take(config["max_top_access"])
       end
       
       # Save iplist and log info for next run into JSON data file
@@ -184,6 +199,13 @@ File.open("#{config['top_access_log']}","a") do |ftop|
   ftop.puts "#{Time.new.to_s} -- Top access logs ---------------------------------------------------"
   top_access.each do |top|
     ftop.puts "#{Time.new.to_s} #{top[:nr]} #{top[:file]}"
+  end
+end
+
+File.open("#{config['top_size_log']}","a") do |ftop|
+  ftop.puts "#{Time.new.to_s} -- Top size logs ---------------------------------------------------"
+  top_size.each do |top|
+    ftop.puts "#{Time.new.to_s} #{top[:size] / 1024} #{top[:file]}"
   end
 end
 

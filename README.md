@@ -29,6 +29,10 @@ whitelist: 111.111.111.111, 222.222.222.222
 exclude_names:
   - bytes_log
   - ftp_log
+log:  /Users/kepes/Work/wordpress-brute-protect/wbp.log
+top_access_log:  /Users/kepes/Work/wordpress-brute-protect/wbp_num.log
+top_size_log:  /Users/kepes/Work/wordpress-brute-protect/wbp_size.log
+max_top_access: 10
 ```
 
 ## Configuration parameters
@@ -42,6 +46,7 @@ exclude_names:
 * log: log file 
 * top_access_log: top access logs reported here
 * max_top_access: number of top access logs 
+* top_size_log: log file for top transfers
 
 ## TODO
 * Logging
