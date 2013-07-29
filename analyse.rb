@@ -16,6 +16,7 @@ require 'json'
 # Log one line and put timestamp into
 def log (text)
   @log_file.puts "#{Time.new.to_s} #{text}"
+  @log_file.flush
 end
 
 # First argument must be config.yaml file
@@ -78,6 +79,7 @@ Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
   else
     # If file changed open it
     File.open(dir,'r') do |file|
+      log "Processing #{dir}"
       log_first_line = file.gets
       
       # If log_data is nil this is our first read so we need to initialize iplist for attackers
