@@ -8,15 +8,9 @@ Scan all specified webserver log files and try to find IP addresses which brutes
 Usage
 -----------------------
 ```console
-ruby analyse.rb ./config.yaml
+ruby analyse.rb start -- ./config.yml
 ``` 
 
-Best in cron job:
-```console
-#/etc/cron.d/wordpress-block
-SHELL=/bin/sh
-*/2 * * * * root        /usr/local/bin/ruby /root/analyse.rb /home/root/config.yaml >> /var/log/wordpress-block.log
-```
 config.yaml format
 -----------------------
 ```ruby
