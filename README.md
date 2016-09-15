@@ -8,8 +8,8 @@ Scan all specified webserver log files and try to find IP addresses which brutes
 Usage
 -----------------------
 ```console
-ruby analyse.rb start -- ./config.yml
-``` 
+ruby analyse.rb start -- ./config.yaml
+```
 
 config.yaml format
 -----------------------
@@ -27,6 +27,7 @@ log:  /Users/kepes/Work/wordpress-brute-protect/wbp.log
 top_access_log:  /Users/kepes/Work/wordpress-brute-protect/wbp_num.log
 top_size_log:  /Users/kepes/Work/wordpress-brute-protect/wbp_size.log
 max_top_access: 10
+sleep_time: 120
 ```
 
 ## Configuration parameters
@@ -37,11 +38,11 @@ max_top_access: 10
 * apache_logs_start_last: true if old logs NOT processed and start from the end of all log file. False for process all logs from the begining. Only affect the first run of the script. Usefull on working systems with large log files. If false first run can take long time!   
 * whitelist: script will not deny this IP addresses
 * exclude_names: exclude log files with names specified here
-* log: log file 
+* log: log file
 * top_access_log: top access logs reported here
-* max_top_access: number of top access logs 
+* max_top_access: number of top access logs
 * top_size_log: log file for top transfers
 
 ## TODO
 * Logging
-* Check if process already running
+* Refactor

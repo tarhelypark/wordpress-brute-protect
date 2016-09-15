@@ -1,0 +1,14 @@
+data_dir: /Users/kepes/Work/wordpress-brute-protect/dat
+apache_logs: /Users/kepes/Work/wordpress-brute-protect/testlog
+apache_logs_pattern: "*/*"
+deny_cmd: echo
+apache_logs_start_last: true
+exclude_names:
+  - bytes_log
+  - ftp_log
+whitelist: 91.82.110.172, 91.82.110.171, 94.199.51.8
+log:  /Users/kepes/Work/wordpress-brute-protect/wbp.log
+top_access_log:  /Users/kepes/Work/wordpress-brute-protect/wbp_num.log
+top_size_log:  /Users/kepes/Work/wordpress-brute-protect/wbp_size.log
+max_top_access: 10
+sleep_time: 10
