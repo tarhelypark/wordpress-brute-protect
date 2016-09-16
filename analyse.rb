@@ -37,7 +37,6 @@ end
 
 # Load YAML xonfig
 config = YAML.load_file(config_name)
-#config['apache_logs_pattern'] = config['apache_logs_pattern'].tr('?', '*')
 whitelist = config['whitelist'].split(',')
 whitelist.collect! { |ip| ip.strip }
 
