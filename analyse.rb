@@ -13,7 +13,6 @@
 require 'yaml'
 require 'json'
 require 'daemons'
-require 'fileutils'
 
 # Log one line and put timestamp into
 def log (text)
@@ -178,8 +177,15 @@ Daemons.run_proc('analyze.rb', {dir_mode: :normal, dir: config['data_dir']}) do
             top_size = top_size.sort_by { |top| top[:size] }.reverse.take(config["max_top_access"])
           end
 
+          # create data file folder without fileutils gem
+          tmp_path = config['data_dir']
+          File.absolute_path(dir).split('/').each do |d|
+            tmp_path = tmp_path + d
+            Dir.mkdir(tmp_path) unless Dir.exist?(tmp_path)
+            tmp_path += '/'
+          end
+
           # Save iplist and log info for next run into JSON data file
-          FileUtils.mkdir_p(data_file_path) unless Dir.exist?(data_file_path)
           File.open(data_file_name,"w") do |fdata|
             log_data = Hash.new
             log_data[:size] = log_size
