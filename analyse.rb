@@ -45,7 +45,7 @@ unless Dir.exist? config['data_dir']
   Dir.mkdir config['data_dir'], 0700
 end
 
-Daemons.run_proc('analyze.rb') do
+Daemons.run_proc('analyze.rb', {dir_mode: :normal, dir: config['data_dir']}) do
   loop do
     @log_file = File.open("#{config['log']}","a")
 
