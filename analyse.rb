@@ -13,6 +13,7 @@
 require 'yaml'
 require 'json'
 require 'daemons'
+require 'fileutils'
 
 # Log one line and put timestamp into
 def log (text)
@@ -66,8 +67,10 @@ Daemons.run_proc('analyze.rb', {dir_mode: :normal, dir: config['data_dir']}) do
 
       # Initialize log_data to store suspicious IP addresses and other usefull info
       log_data = nil
-      if File.exist? "#{config['data_dir']}/" + File.basename(dir) + ".dat"
-        File.open("#{config['data_dir']}/" + File.basename(dir) + ".dat","r") do |fdata|
+      data_file_path = "#{config['data_dir']}/#{File.absolute_path(dir)}"
+      data_file_name = "#{data_file_path}/#{File.basename(dir)}.dat"
+      if File.exist? data_file_name
+        File.open(data_file_name,"r") do |fdata|
           log_data = fdata.gets
           log_data = JSON.parse(log_data) unless log_data.nil?
         end
@@ -176,7 +179,8 @@ Daemons.run_proc('analyze.rb', {dir_mode: :normal, dir: config['data_dir']}) do
           end
 
           # Save iplist and log info for next run into JSON data file
-          File.open("#{config['data_dir']}/" + File.basename(dir) + ".dat","w") do |fdata|
+          FileUtils.mkdir_p(data_file_path) unless Dir.exist?(data_file_path)
+          File.open(data_file_name,"w") do |fdata|
             log_data = Hash.new
             log_data[:size] = log_size
             log_data[:mtime] = log_mtime
