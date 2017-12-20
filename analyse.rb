@@ -57,6 +57,8 @@ Daemons.run_proc('analyze.rb', {dir_mode: :normal, dir: config['data_dir']}) do
 
     # Iterate over all log files
     Dir.glob(config['apache_logs'] + '/' + config['apache_logs_pattern']) do |dir|
+      # Next round if it is not a file
+      next unless File.file?(dir)
       # Except files with name in exclude config parameter
       exclude = false
       config['exclude_names'].each do |e|
